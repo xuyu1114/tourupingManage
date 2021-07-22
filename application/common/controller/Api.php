@@ -2,6 +2,7 @@
 
 namespace app\common\controller;
 
+use app\api\library\Utils;
 use app\common\library\Auth;
 use think\Config;
 use think\exception\HttpResponseException;
@@ -64,6 +65,7 @@ class Api
      */
     protected $responseType = 'json';
 
+
     /**
      * 构造方法
      * @access public
@@ -92,12 +94,35 @@ class Api
      */
     protected function _initialize()
     {
-        //跨域请求检测
-        check_cors_request();
+        //允许所有跨域请求
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers:*");
 
-        // 检测IP是否允许
-        check_ip_allowed();
 
+        //基础参数校验
+        $validate = new Validate(["timestamp"=>'require','sign'=>'require',"app_key"=>"require"]);
+        $check_res = $validate->check( $this->request->post());
+        if(!$check_res){
+            $this->error($validate->getError(),'',4001);
+        }
+        //请求时间校验 不得超过五分钟
+        if(abs(time() - $this->request->post('timestamp')/1000)> 300){
+            $this->error('请求超时，请重试',[],4001);
+        }
+
+
+        //请求资格校验
+        $app_key = $this->request->post('app_key');
+        $app_info = Config::get('app_info');
+        if(empty($app_info[$app_key])||$app_info[$app_key]['status']!=1){
+            $this->error('app_key未配置或未审核',[],4001);
+        }
+        $app_secret = $app_info[$app_key]['app_secret'];
+        //签名校验
+        $sign_check_res = Utils::checkSign($this->request->post(),$app_secret);
+        if(!$sign_check_res){
+            //$this->error('签名校验失败',[],4001);
+        }
         //移除HTML标签
         $this->request->filter('trim,strip_tags,htmlspecialchars');
 
@@ -113,27 +138,6 @@ class Api
         $path = str_replace('.', '/', $controllername) . '/' . $actionname;
         // 设置当前请求的URI
         $this->auth->setRequestUri($path);
-        // 检测是否需要验证登录
-        if (!$this->auth->match($this->noNeedLogin)) {
-            //初始化
-            $this->auth->init($token);
-            //检测是否登录
-            if (!$this->auth->isLogin()) {
-                $this->error(__('Please login first'), null, 401);
-            }
-            // 判断是否需要验证权限
-            if (!$this->auth->match($this->noNeedRight)) {
-                // 判断控制器和方法判断是否有对应权限
-                if (!$this->auth->check($path)) {
-                    $this->error(__('You have no permission'), null, 403);
-                }
-            }
-        } else {
-            // 如果有传递token才验证是否登录状态
-            if ($token) {
-                $this->auth->init($token);
-            }
-        }
 
         $upload = \app\common\model\Config::upload();
 
