@@ -42,7 +42,7 @@ https://doc.fastadmin.net
 
 https://demo.fastadmin.net
 
-用户名：admin
+：admin
 
 密　码：123456
 

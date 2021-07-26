@@ -197,7 +197,7 @@ class Install extends Command
             throw new Exception($e->getMessage());
         }
         // 后台入口文件
-        $adminFile = ROOT_PATH . 'public' . DS . 'admin.php';
+        $adminFile = ROOT_PATH . 'public' . DS . 'manage.php';
 
         // 数据库配置文件
         $dbConfigFile = APP_PATH . 'database.php';

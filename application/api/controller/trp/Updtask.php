@@ -103,11 +103,12 @@ class Updtask{
             );
             //获取领用记录
             $res = $sk->get($url,$where_param);
-            if(!$res){
+            if(!$res||empty($res)){
                 throw new Exception("接口未返回任何数据");
             }
             $collect_info = json_decode($res,true);
             if(!is_array($collect_info)||empty($collect_info)){
+                Log::info("接口返回数据：");
                 Log::info($res);
                 throw new Exception("接口返回数据解析失败");
             }
@@ -119,8 +120,15 @@ class Updtask{
                 ->where("optime","<=",$end_data)
                 ->column("transaction_no");
             foreach ($collect_info as $value){
+
                 //对比，已存在：跳过
                 if(in_array($value['transaction_no'],$local_collect)){
+                    continue;
+                }
+               //价格超过100w 过滤
+                if( $value['price'] > 1000000){
+                    Log::info("价格超过100w的订单");
+                    Log::info($value);
                     continue;
                 }
                 //否则 插入数据
@@ -154,6 +162,7 @@ class Updtask{
                     $weight = $num*$value['num']/1000;
                 }
                 $single_data['weight'] = $weight;
+//                Db::table("trp_collect")->insert($single_data);
                 array_push($ins_datas,$single_data);
             }
             if(empty($ins_datas)){
@@ -162,7 +171,7 @@ class Updtask{
                 Utils::sendDingMessage("同步农资品领用数据没有获取到新的数据告警，是否重复跑了task？或者换个时间段试试");
                 die;
             }
-            $res = Db::table("trp_collect")->insertAll($ins_datas);
+            //$res = Db::table("trp_collect")->insertAll($ins_datas);
             if(!$res){
                 throw new Exception("新增农资品领用数据失败");
             }

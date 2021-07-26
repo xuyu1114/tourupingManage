@@ -13,6 +13,21 @@
 use think\Env;
 
 return [
+
+//    // 数据库类型
+//    'type'            => Env::get('database.type', 'mysql'),
+//    // 服务器地址
+//    'hostname'        => Env::get('database.hostname', 'rm-0jfezr581o3rc42x2.mysql.rds.ops.hzegcv3.cn'),
+//    // 数据库名
+//    'database'        => Env::get('database.database', 'linantrp2021'),
+//    // 用户名
+//    'username'        => Env::get('database.username', 'trpadm'),
+//    // 密码
+//    'password'        => Env::get('database.password', '7ujadq9ooldqO8idq'),
+//    // 端口
+//    'hostport'        => Env::get('database.hostport', '3306'),
+
+
     // 数据库类型
     'type'            => Env::get('database.type', 'mysql'),
     // 服务器地址

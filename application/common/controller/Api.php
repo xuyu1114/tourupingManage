@@ -121,7 +121,7 @@ class Api
         //签名校验
         $sign_check_res = Utils::checkSign($this->request->post(),$app_secret);
         if(!$sign_check_res){
-            //$this->error('签名校验失败',[],4001);
+            $this->error('签名校验失败',[],4001);
         }
         //移除HTML标签
         $this->request->filter('trim,strip_tags,htmlspecialchars');

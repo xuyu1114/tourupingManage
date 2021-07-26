@@ -9,7 +9,7 @@ use app\common\controller\Backend;
  *
  * @icon fa fa-circle-o
  */
-class Goods_purchase extends Backend
+class GoodsPurchase extends Backend
 {
     
     /**
