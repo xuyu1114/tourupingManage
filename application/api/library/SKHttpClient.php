@@ -209,7 +209,6 @@ class SKHttpClient
         }
         $output = curl_exec($ch);
         if($output){
-            Log::info("bigDataGet——data:" . $output);
             curl_close($ch);
             return $output;
         } else {

@@ -70,6 +70,7 @@ class Updtask{
                }
             }
             Db::commit();
+            Log::info("同步农资企业定时任务完成");
             var_dump("success");die;
         }catch (Exception $e){
             Db::rollback();
@@ -85,8 +86,9 @@ class Updtask{
     public function synCollectData(){
         Db::startTrans();
         try {
-            $begin_data = $_POST["begin"];
-            $end_data =  $_POST["end"];
+            $begin_data = isset($_POST["begin"])?$_POST["begin"]:isset($_GET["begin"])?$_GET["begin"]:'';
+            $end_data = isset($_POST["end"])?$_POST["end"]:isset($_GET["end"])?$_GET["end"]:'';
+
             if(empty($begin_data)){
                 $begin_data = Db::table("trp_collect")->order("optime desc")->limit(1)->column("optime");
                 $begin_data = $begin_data[0];
@@ -162,7 +164,6 @@ class Updtask{
                     $weight = $num*$value['num']/1000;
                 }
                 $single_data['weight'] = $weight;
-//                Db::table("trp_collect")->insert($single_data);
                 array_push($ins_datas,$single_data);
             }
             if(empty($ins_datas)){
@@ -171,12 +172,13 @@ class Updtask{
                 Utils::sendDingMessage("同步农资品领用数据没有获取到新的数据告警，是否重复跑了task？或者换个时间段试试");
                 die;
             }
-            //$res = Db::table("trp_collect")->insertAll($ins_datas);
-            if(!$res){
+            $ins_res = Db::table("trp_collect")->insertAll($ins_datas);
+            if(!$ins_res){
                 throw new Exception("新增农资品领用数据失败");
             }
             Db::commit();
-            var_dump("success，插入数据：".$res."条");
+            Log::info("同步领用记录定时任务完成插入数据：".$ins_res."条");
+            var_dump("success，插入数据：".$ins_res."条");
             die;
         }catch (Exception $e){
             Db::rollback();
@@ -191,8 +193,8 @@ class Updtask{
      */
     public function synPurchaseData(){
         try{
-            $begin_data = $_POST["begin"];
-            $end_data =  $_POST["end"];
+            $begin_data = isset($_POST["begin"])?$_POST["begin"]:isset($_GET["begin"])?$_GET["begin"]:'';
+            $end_data = isset($_POST["end"])?$_POST["end"]:isset($_GET["end"])?$_GET["end"]:'';
             if(empty($begin_data)){
                 $begin_data = Db::table("trp_goods_purchase")->order("optime desc")->limit(1)->column("optime");
                 $begin_data = $begin_data[0];
@@ -260,6 +262,7 @@ class Updtask{
                 throw new Exception("新增农资品领用数据失败");
             }
             Db::commit();
+            Log::info("同步采购数据定时任务success，插入数据：".$res."条");
             var_dump("success，插入数据：".$res."条");
             die;
         }catch (Exception $e){
