@@ -8,7 +8,7 @@ use think\Exception;
 class Infomation extends Api{
 
     /**
-     * 获取 经营主体入网数，店铺交易活跃等数据
+     * 获取 经营主体入网数，店铺交易活跃等数据1
      */
     public function getTotalAndActive(){
         try {
