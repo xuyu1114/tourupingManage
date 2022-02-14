@@ -2,6 +2,7 @@
 namespace app\api\library;
 
 use think\cache\driver\Redis;
+use think\Config;
 use think\Db;
 use think\Exception;
 use think\Log;
@@ -242,6 +243,23 @@ class Utils
             $days[] = $day;
         }
         return $days;
+    }
+
+    //提取街道（新）
+    public static function getStreet_new($address){
+        $linan_street = Config::get("linanStreet");
+        foreach ($linan_street as  $value){
+            if(strstr($value,"街道")){
+                $value_dealed = substr($value,0,strlen($value)-strlen("街道"));
+            }
+            if(strstr($value,"镇")){
+                $value_dealed = substr($value,0,strlen($value)-strlen("镇"));
+            }
+            if(strstr($address,$value_dealed)){
+                return $value;
+            }
+        }
+        return '临安区';
     }
 
     /**

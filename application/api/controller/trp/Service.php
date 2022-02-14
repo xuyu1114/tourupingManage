@@ -34,7 +34,7 @@ class Service extends ServiceBase {
                         business_main,
                         business_area,
                         operator_id,
-                        longitude_latitude')
+                        longitude_latitude,createtime')
                 ->where($where)->order('createtime desc')->select();
             $this->success('success',$ret_data,0);
         }catch (Exception $e){
@@ -58,7 +58,7 @@ class Service extends ServiceBase {
             if (strtotime($end) - strtotime($start) > 86400 * 30) {
                 $this->error("最多一次可获取三十天内的数据", [], 1001);
             }
-            $where['createtime'] = array('between', [$start, $end]);
+            $where['optime'] = array('between', [$start, $end]);
             $ret_data = Db::table('trp_collect')
                 ->field('in_collect_id,
                         transaction_no,

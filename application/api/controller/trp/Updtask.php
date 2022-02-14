@@ -159,9 +159,9 @@ class Updtask{
                 $num = $num<1?1:$num;
                 $unit = trim(str_replace($num,"",$value["attr"]));
                 if(in_array($unit,['千克','Kg','升','L','公斤','l'])){
-                    $weight = $num*$value['num'];
+                    $weight =  sprintf('%.2f',$num*$value['num']);
                 }else{
-                    $weight = $num*$value['num']/1000;
+                    $weight =  sprintf('%.2f',$num*$value['num']/1000);
                 }
                 $single_data['weight'] = $weight;
                 array_push($ins_datas,$single_data);
