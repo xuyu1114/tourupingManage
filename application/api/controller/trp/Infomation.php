@@ -1,6 +1,7 @@
 <?php
 namespace app\api\controller\trp;
 
+use app\api\library\SqlsrvHelp;
 use app\api\library\Utils;
 use app\common\controller\Api;
 use think\Config;
@@ -287,6 +288,7 @@ class Infomation extends Api{
                 ->order('optime desc')
                 ->page($page,$page_size)
                 ->select();
+
             foreach ($data as &$val){
                 $attr_num = (int)$val['attr'];
                 $sum_num = $val['out_num']*$attr_num;
