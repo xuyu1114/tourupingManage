@@ -142,10 +142,11 @@ class Pecandata extends Api {
        $ret_data['zhonglei'] =$zhonglei;
 
        //直播电商观看人数占比
-       $datetime_new = Db::connect("db_2")->table('bl_ec_area_viewer_count')->field("datetime")->order("id desc")->find()['datetime'];
+       $datetime_new = Db::connect("db_2")->table('bl_ec_province_viewer')->field("datetime")->order("id desc")->find()['datetime'];
        //获取当月数据
-       $bottm_data = Db::connect("db_2")->table('bl_ec_area_viewer_count')
-           ->field("area,viewer_count,'-' as contrast")
+       $bottm_data = Db::connect("db_2")->table('bl_ec_province_viewer')
+           ->field("province as area,view_proportion as viewer_count,'-' as contrast")
+           ->order("view_proportion desc")
            ->where(['datetime'=>$datetime_new])->select();
 //       $datetime_new = "2022年1月";
        //获取上个月的时间
@@ -163,8 +164,8 @@ class Pecandata extends Api {
        $month = date("m",$last_month_time);
        $month = (int)$month;
        $last_month = $year."年".$month."月";
-       $bottm_data_last = Db::connect("db_2")->table('bl_ec_area_viewer_count')
-           ->field("area,viewer_count")
+       $bottm_data_last = Db::connect("db_2")->table('bl_ec_province_viewer')
+           ->field("province as area,view_proportion as viewer_count,'-' as contrast")
            ->where(['datetime'=>$last_month])->select();
        //计算环比
        if(!empty($bottm_data_last)){

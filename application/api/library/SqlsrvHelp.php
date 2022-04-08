@@ -12,6 +12,7 @@ class SqlsrvHelp{
     function __construct(){
         $this->connect = sqlsrv_connect('192.168.1.130', array('Database' => 'GTC_lasht', 'UID' => 'sa' , 'PWD' => 'r_159357'));
         if( $this->connect == false){
+
             throw new Exception("数据库链接失败",-1);
         }
     }
