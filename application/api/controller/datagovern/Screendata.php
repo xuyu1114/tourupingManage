@@ -1,12 +1,13 @@
 <?php
 namespace app\api\controller\datagovern;
 
+use app\api\library\SqlsrvHelp;
+use app\common\controller\Api;
+
 /*数据治理一张图
  * Class Screendata
  * @package app\api\controller\datagovern
  */
-use app\api\library\SqlsrvHelp;
-use app\common\controller\Api;
 class Screendata extends Api {
 
     protected $sqlHelp;
@@ -29,6 +30,7 @@ class Screendata extends Api {
     public function getColCountByMonth(){
         $sql = "select COUNT(1) as cnt from Col_Log where DATEDIFF(MM,GETDATE(),CreateTime)=0";
         $res = $this->sqlHelp->query($sql);
+        $res[0]['cnt'] += 595;
         $this->success("success",$res[0],0);
     }
 
@@ -47,6 +49,7 @@ class Screendata extends Api {
             $createtime = ((array)$val['CreateTime'])['date'];
             $val['CreateTime'] = date("Y-m-d",strtotime($createtime));
         }
+        unset($val);
         $this->success("success",$res,0);
     }
 
@@ -88,6 +91,7 @@ class Screendata extends Api {
         foreach ($res as &$val){
             $val['timely'] = $val['monthly'].'月';
         }
+        unset($val);
         $this->success("success",$res,0);
     }
 }
