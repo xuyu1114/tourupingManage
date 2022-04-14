@@ -76,7 +76,26 @@ class Screendata extends Api {
             inner join Base_DataItemDetail t4 on t3.APIType=t4.F_ItemValue 
             and t4.F_ItemId='d525662e-1ae2-418e-9a88-1df1e24b5838')
             select typeName,SUM(countNum) cnt from tb2 group by typeName order by cnt desc";
-             $res = $this->sqlHelp->query($sql);
+        $res = $this->sqlHelp->query($sql);
+        $sj_count = 0;
+        $sj_count += self::getcount("Custom_ZRHJ_QXSJ_SSXX");
+        $sj_count += self::getcount("Custom_ZRHJ_QXSJ_TRSQ");
+        $sj_count += self::getcount("Iot_FruitGrow");
+        $sj_count += self::getcount("Custom_ZRHJ_QXSJ_CQCB");
+        $sj_count += self::getcount("Custom_ZRHJ_QXSJ_CQCBTP");
+        $sj_count += self::getcount("Custom_ZRHJ_QXSJ_CQZL");
+        $sj_count += self::getcount("Custom_ZRHJ_QXSJ_MQTP");
+        $temp_arr = array(
+            "typeName"=>"设备采集",
+            "cnt"=>$sj_count
+        );
+        array_push($res,$temp_arr);
+        $temp_arr = array(
+            "typeName"=>"人工采集",
+            "cnt"=>5525762
+        );
+        array_push($res,$temp_arr);
+
         $this->success("success",$res,0);
     }
 
@@ -89,5 +108,14 @@ class Screendata extends Api {
             $val['timely'] = $val['monthly'].'月';
         }
         $this->success("success",$res,0);
+    }
+
+    //获取表的数据条数
+    public function getcount($table_name){
+        $sql = "select COUNT(1) as  counts  from $table_name";
+        $this->sqlHelp = new SqlsrvHelp();
+        $sj_count = $this->sqlHelp->query($sql)[0]['counts'];
+        return $sj_count;
+
     }
 }
