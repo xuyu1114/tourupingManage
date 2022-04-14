@@ -12,7 +12,6 @@ class SqlsrvHelp{
     function __construct(){
         $this->connect = sqlsrv_connect('192.168.1.130', array('Database' => 'GTC_lasht', 'UID' => 'sa' , 'PWD' => 'r_159357'));
         if( $this->connect == false){
-
             throw new Exception("数据库链接失败",-1);
         }
     }
@@ -20,7 +19,7 @@ class SqlsrvHelp{
     //用于有记录结果返回的操作，特别是SELECT操作
     public function query($sql){
             $ret_data = array();
-            @sqlsrv_query("SET NAMES UTF8",$this->connect);
+//            @sqlsrv_query($this->connect,"SET NAMES UTF8");
             $result = @sqlsrv_query($this->connect, $sql);
             if($result===false){
                 Log::error("sqlserver数据库链接失败".iconv("GBK","UTF-8",sqlsrv_errors()[0]['message']));

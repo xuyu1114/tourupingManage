@@ -74,7 +74,6 @@ class Pecandata extends Api {
         $sql = "select * from(
             select top 1 * from (
             select top 2 count(1) as zcnt from Custom_CYCL_ZDXZ_XZML
-            where nd=year(getdate()) or nd = year(getdate())-1
             group by nd order by nd desc
             ) t where t.zcnt>0
             ) t1,(
@@ -190,8 +189,8 @@ class Pecandata extends Api {
        //浙农码赋码
        $znm = array(
            "green"=>4396,
-           "yellow"=>43,
-           'red'=>4
+           "yellow"=>0,
+           'red'=>0
        );
        $ret_data['znm']=$znm;
        //农政贷
